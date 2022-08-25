@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+
+    stage('Check if Today is Holiday') {
+            steps {
+             
+                script {
+                    IS_HOLIDAY = bat(script: 'grep -q $(date +%Y-%m-%d) holidays', returnStatus: true)
+                    if (IS_HOLIDAY == 0) {
+                        currentBuild.result = 'ABORTED'
+                        error ('Today is Holiday according to the file /etc/holidays inside the Jenkins server')
+                    }
+                }
+            }
+        }
+}
